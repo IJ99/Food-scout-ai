@@ -64,7 +64,10 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 app = FastAPI(title="Food Scout AI API")
 
-GROQ_API_KEY = "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"
+from dotenv import load_dotenv
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
 
 class FoodLocationRequest(BaseModel):
     user_input: str
