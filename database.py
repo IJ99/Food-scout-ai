@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 
 # Connect to (or create) the database
-conn = sqlite3.connect("food_scout.db")
+conn = sqlite3.connect("/tmp/food_scout.db")
 cursor = conn.cursor()
 
 # Create users table
