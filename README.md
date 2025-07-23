@@ -205,6 +205,44 @@ bash start.sh
 
 ---
 
+LLM Prompts Used in the System (for Groq / LLaMA3): 
+
+ * Extract food and city from user input:
+   Function: extract_food_and_location_groq():
+
+   Prompt logic:
+   prompt = f"""
+Extract the food and city from this sentence: "{user_input}".
+Return only this exact JSON format:
+{{ "food": "...", "city": "..." }}
+"""
+
+System instruction:
+You are a helpful assistant that extracts food and city names from user input. Return only valid JSON like { \"food\": \"amala\", \"city\": \"Ibadan\" } with no explanation.
+
+
+ * Fallback: Suggest a similar Nigerian food:
+   Function: get_llama_suggested_food()
+
+   Prompt logic:
+   prompt = f"""
+The user asked for '{original_food}' but we couldn’t find it in nearby restaurants.
+Suggest a similar Nigerian dish they might enjoy instead.
+Just return valid JSON like: {{ "suggested_food": "...", "reason": "..." }}
+"""
+
+* Infer a food from vague user input:
+  Function: infer_food_from_message()
+
+ Prompt logic:
+ prompt = f"""
+Based on the user's message: "{message}", suggest the most likely Nigerian food they are craving.
+Reply ONLY in this JSON format: {{ "inferred_food": "..." }}
+"""
+
+ System instruction:
+ You are an assistant that suggests Nigerian dishes from vague cravings. Respond ONLY with JSON like { \"inferred_food\": \"pepper soup\" }
+
 ##  Deploy to Render
 
 Ensure these env vars are set in `render.yaml` or the Render UI:
