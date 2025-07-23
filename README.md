@@ -201,7 +201,7 @@ TWILIO_PHONE_NUMBER=+1...
 bash start.sh
 ```
 
-> Visit: [http://localhost:8000/docs](http://localhost:8000/docs) to test API
+> Visit: [https://food-scout-ai-1.onrender.com/docs]((https://food-scout-ai-1.onrender.com/docs))
 
 ---
 
