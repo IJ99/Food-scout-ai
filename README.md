@@ -221,6 +221,9 @@ System instruction:
 You are a helpful assistant that extracts food and city names from user input. Return only valid JSON like { \"food\": \"amala\", \"city\": \"Ibadan\" } with no explanation.
 
 
+
+
+
  * Fallback: Suggest a similar Nigerian food:
    Function: get_llama_suggested_food()
 
@@ -230,6 +233,9 @@ The user asked for '{original_food}' but we couldn’t find it in nearby restaur
 Suggest a similar Nigerian dish they might enjoy instead.
 Just return valid JSON like: {{ "suggested_food": "...", "reason": "..." }}
 """
+
+
+
 
 * Infer a food from vague user input:
   Function: infer_food_from_message()
@@ -242,6 +248,9 @@ Reply ONLY in this JSON format: {{ "inferred_food": "..." }}
 
  System instruction:
  You are an assistant that suggests Nigerian dishes from vague cravings. Respond ONLY with JSON like { \"inferred_food\": \"pepper soup\" }
+
+
+
 
 ##  Deploy to Render
 
