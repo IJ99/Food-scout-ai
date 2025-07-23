@@ -1,15 +1,26 @@
-from dotenv import load_dotenv
-load_dotenv()
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import requests
+import os
 import json
 import re
-import os
 import sqlite3
+import requests
+
 from typing import Optional
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer 
+
+# Local utility imports
 from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
+
+# ✅ Load environment variables
+load_dotenv()
+groq_key = os.getenv("GROQ_API_KEY")
+print("🔑 GROQ KEY LOADED:", groq_key)  # Optional: remove after confirming it works
+
+# ✅ Initialize FastAPI app
+app = FastAPI()
 
 # ✅ Twilio for notifications
 from twilio.rest import Client
@@ -153,44 +164,54 @@ def get_llama_suggested_food(original_food):
         return None
 
 # --- Extract food & location using Groq ---
-def extract_food_and_location_groq(user_input):
+def extract_food_and_location_groq(user_input: str):
     prompt = f"""
-    Extract the food and city from this sentence: "{user_input}".
-    Return only this exact JSON format:
-    {{ "food": "...", "city": "..." }}
-    """
-    try:
-        response = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "llama3-8b-8192",
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful assistant that extracts food and city names from user input. Return only valid JSON like { \"food\": \"amala\", \"city\": \"Ibadan\" } with no explanation."
-                    },
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.2
-            },
-            timeout=30
-        )
-        if response.status_code != 200:
-            raise Exception(f"Groq API error: {response.status_code} - {response.text}")
+You are a helpful assistant that extracts food items and location (city) from user messages. 
+Extract the food and city from the message below. Respond ONLY in the following JSON format:
 
-        output = response.json()["choices"][0]["message"]["content"]
-        match = re.search(r'\{.*?\}', output, re.DOTALL)
-        if not match:
-            raise ValueError("No valid JSON found in model response")
-        json_text = match.group(0).replace("'", '"')
-        return json.loads(json_text)
-    except Exception as e:
-        print(f"❌ Error from Groq API: {e}")
+{{"food": "food_name", "city": "city_name"}}
+
+If food or city is not found, return null for that field.
+
+Message: "{user_input}"
+"""
+
+    headers = {
+        "Authorization": f"Bearer {os.getenv('GROQ_API_KEY')}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "llama3-8b-8192",
+        "messages": [
+            {"role": "system", "content": "You extract food and city from user input and respond with JSON only."},
+            {"role": "user", "content": prompt}
+        ]
+    }
+
+    try:
+        response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+        response.raise_for_status()
+        content = response.json()["choices"][0]["message"]["content"]
+
+        print("🧠 LLaMA response:", content)  # For debugging
+
+        # Force JSON extraction
+        match = re.search(r'\{.*?\}', content, re.DOTALL)
+        if match:
+            json_part = match.group(0)
+            result = json.loads(json_part)
+            return {
+                "food": result.get("food"),
+                "city": result.get("city")
+            }
+
         return {"food": None, "city": None}
+
+    except Exception as e:
+        print("❌ Groq extraction error:", e)
+        return {"food": None, "city": None}
+
 
 # --- Geocoding ---
 def geocode_city(city_name):
@@ -718,3 +739,48 @@ def test_email():
         restaurant="Mama Nkechi Kitchen"
     )
     return {"success": result}
+
+
+
+
+ 
+
+   
+    
+ 
+              
+              
+
+
+
+    
+              
+              
+        
+      
+       
+
+                 
+                          
+                   
+       
+
+
+   
+  
+   
+     
+
+   
+    
+        
+    
+    
+
+          
+
+
+
+
+   
+         
