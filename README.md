@@ -1,9 +1,9 @@
- Food Scout AI:
+## Food Scout AI:
 
 Food Scout AI is a FastAPI-based backend service that helps users find nearby restaurants serving their desired meals using natural language queries. It uses LLaMA (via Groq API) for language understanding, Geoapify for geolocation and restaurant search, and SQLite for user and search history storage. It also includes Twilio/EmailJS integrations to notify restaurants.
 
 
- Features:
+## Features:
 
 *  AI-powered food and city extraction from user input
 *  Geo-based restaurant recommendations using Geoapify
@@ -12,7 +12,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 *  Restaurant notifications via SMS (Twilio) or Email (EmailJS)
 *  Chat interface with memory using conversation sessions
 
- Tech Stack:
+ ## Tech Stack:
 
 * FastAPI for REST API
 * Groq + LLaMA3 for natural language understanding
@@ -23,7 +23,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 
 
 
- API Endpoints:
+ ## API Endpoints:
 
  # `GET /`
 
@@ -138,7 +138,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 
 
 
- How It Works:
+ ## How It Works:
 
 1. User sends natural query like "I want amala in Ibadan"
 2. API extracts food + city via Groq
@@ -148,7 +148,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 6. Result is saved + returned with nearby matches
 
 
- Fallback Intelligence:
+ ## Fallback Intelligence:
 
 * If no restaurants are found:
 
@@ -157,7 +157,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 
 
 
- Project Structure:
+## Project Structure:
 
 ```
 .
