@@ -181,7 +181,7 @@ Message: "{user_input}"
         "Content-Type": "application/json"
     }
 
-       payload = {
+    payload = {
     "model": "llama3-8b-8192",
     "messages": [
         {"role": "system", "content": "You extract food and city from user input and respond with JSON only."},
