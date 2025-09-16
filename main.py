@@ -181,13 +181,15 @@ Message: "{user_input}"
         "Content-Type": "application/json"
     }
 
-    payload = {
-        "model": "llama3-8b-8192",
-        "messages": [
-            {"role": "system", "content": "You extract food and city from user input and respond with JSON only."},
-            {"role": "user", "content": prompt}
-        ]
-    }
+       payload = {
+    "model": "llama3-8b-8192",
+    "messages": [
+        {"role": "system", "content": "You extract food and city from user input and respond with JSON only."},
+        {"role": "user", "content": prompt}
+    ],
+    "temperature": 0,
+    "response_format": { "type": "json_object" }
+}
 
     try:
         response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
