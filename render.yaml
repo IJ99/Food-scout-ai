@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: food-scout-ai
-    env: docker
-    dockerfilePath: ./Dockerfile
-    envVars:
-      - key: GEOAPIFY_API_KEY
-        value: "3f1325af262f410fb28f00e9ae4bbcb2"
-    healthCheckPath: /health
