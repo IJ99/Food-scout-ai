@@ -182,7 +182,7 @@ Message: "{user_input}"
     }
 
     payload = {
-    "model": "llama3-8b-8192",
+    "model": "llama-3.1-8b-instant",
     "messages": [
         {"role": "system", "content": "You extract food and city from user input and respond with JSON only."},
         {"role": "user", "content": prompt}
