@@ -136,19 +136,7 @@ Food Scout AI is a FastAPI-based backend service that helps users find nearby re
 
 * Send sample email using EmailJS
 
-Endpoint	Method	Description	Example Request Body
-/	GET	Root health check	No body
-/extract	POST	Extracts food + location from text	json { "text": "I want yam in Abuja" }
-/search-restaurants	POST	Search restaurants by food + location	json { "food": "yam", "location": "Abuja" }
-/full-search	POST	Extract food/location + search restaurants in one step	json { "text": "Find yam in Abuja" }
-/history/{email}	GET	Retrieve a user’s search history	No body
-/recommend/{email}	GET	Get food recommendations for a user	No body
-/chat	POST	Basic chat endpoint	json { "message": "Suggest food in Lagos" }
-/chat-smart	POST	Advanced chat with memory/context	json { "session_id": "123", "message": "I’m hungry" }
-/memory/{session_id}	GET	Retrieve memory for a session	No body
-/summary/{session_id}	GET	Summarize a chat session	No body
-/test-sms	POST	Test Twilio SMS notification	json { "to": "+2348000000000", "message": "Test SMS" }
-/test-email	POST	Test EmailJS notification	json { "to": "user@example.com", "subject": "Test", "message": "Hello" }
+
 
  ## How It Works:
 
