@@ -22,6 +22,17 @@ print("🔑 GROQ KEY LOADED:", groq_key)  # Optional: remove after confirming it
 # ✅ Initialize FastAPI app
 app = FastAPI()
 
+import traceback
+
+@app.post("/full-search")
+async def full_search(request: FoodLocationRequest):
+    try:
+        # your existing logic
+        ...
+    except Exception as e:
+        print("❌ ERROR in /full-search:", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+        
 # Root endpoint for health checks
 @app.get("/", include_in_schema=False)
 @app.head("/", include_in_schema=False)
