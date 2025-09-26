@@ -53,17 +53,17 @@ Interactive Swagger docs are available here:
 - **POST `/test-sms`** → Send test SMS via Twilio  
 - **POST `/test-email`** → Send test Email via EmailJS  
 
-##🧠 How It Works
+### 🧠 How It Works
 🧑‍🍳 User Journey in Food Scout AI
 
-Starting a search
+### Starting a search
 
 The user types something natural like:
 “I feel like eating suya in Abuja”
 or
 “Where can I get amala in Ibadan?”
 
-Getting results
+## Getting results
 
 Food Scout AI understands the request.
 
@@ -75,19 +75,19 @@ The user also sees how many results were found.
 
 If no restaurant is found, the system suggests something very similar (e.g., another Nigerian dish) and explains why.
 
-History & memory
+## History & memory
 
 Every search the user makes is saved to their personal history.
 
 They can later check “my past searches” to see all the foods and cities they asked about.
 
-Smart recommendations
+## Smart recommendations
 
 Over time, as the user searches for more foods, the system learns their taste.
 
 The user can ask for recommendations, and Food Scout AI will suggest new dishes they might enjoy, based on their history (not just random foods).
 
-Chat option
+## Chat option
 
 Instead of only structured searches, the user can simply “chat” with Food Scout AI.
 
@@ -95,12 +95,12 @@ Example: “I’m craving something spicy” → the system suggests suya or pep
 
 The chat remembers the conversation, so users feel like they’re talking to a personal food assistant.
 
-Notifications
+## Notifications
 
 (Optional) The system can also send test SMS or email notifications, like:
 “A customer is interested in ordering Amala — please expect a call soon!”
 
-✅ In summary
+## ✅ In summary
 
 From the user’s eyes, Food Scout AI feels like:
 
@@ -116,7 +116,7 @@ Get recommendations → Smart new dishes suggested based on your tastes.
 
 Chat freely → A friendly assistant that helps you decide what to eat.
 
-🔎 POST /extract – Extract Food & City
+## 🔎 POST /extract – Extract Food & City
 
 What it does:
 You type something natural like “I want amala in Ibadan.”
@@ -128,7 +128,7 @@ City = Ibadan
 
 When to use: If you just want the system to understand your request without searching restaurants yet.
 
-🍴 POST /search-restaurants – Find Restaurants
+## 🍴 POST /search-restaurants – Find Restaurants
 
 What it does:
 You give the food name and the city, and it shows restaurants nearby.
@@ -136,7 +136,7 @@ You give the food name and the city, and it shows restaurants nearby.
 Example:
 Send { "food": "pizza", "city": "Lagos" } → You get a list of pizza places in Lagos.
 
-🚀 POST /full-search – One-Step Everything
+## 🚀 POST /full-search – One-Step Everything
 
 What it does:
 This is the main shortcut.
@@ -155,15 +155,15 @@ If nothing is found, it suggests similar dishes instead.
 
 Best for: Most users, since it’s a single request from start to finish.
 
-📜 History & Recommendations
-🕒 GET /history/{email} – Past Searches
+## 📜 History & Recommendations
+## 🕒 GET /history/{email} – Past Searches
 
 What it does:
 Shows all the foods and cities you’ve searched before, tied to your email.
 
 Why it matters: Helps you remember what you looked for in the past.
 
-🍲 GET /recommend/{email} – Personalized Suggestions
+## 🍲 GET /recommend/{email} – Personalized Suggestions
 
 What it does:
 Looks at your search history and suggests new dishes you might enjoy.
@@ -173,14 +173,14 @@ If you searched for suya, jollof rice, and okra soup, it might recommend egusi s
 
 Why it’s special: It’s not random — it’s based on your personal tastes.
 
-💬 Chat & Conversation
-💭 POST /chat – Regular Chat
+## 💬 Chat & Conversation
+## 💭 POST /chat – Regular Chat
 
 What it does:
 Lets you have a conversation with the AI about food.
 The chat remembers your session, so it feels like talking to a personal assistant.
 
-🧠 POST /chat-smart – Smarter Chat
+## 🧠 POST /chat-smart – Smarter Chat
 
 What it does:
 More intelligent than /chat.
@@ -188,29 +188,29 @@ More intelligent than /chat.
 If you say something vague like “I’m hungry, I want something spicy”,
 it will guess a food (e.g., pepper soup) and even show nearby places.
 
-📚 GET /memory/{session_id} – See Chat Memory
+## 📚 GET /memory/{session_id} – See Chat Memory
 
 What it does:
 Shows the whole conversation history for that chat session.
 
-📝 GET /summary/{session_id} – Food Summary
+## 📝 GET /summary/{session_id} – Food Summary
 
 What it does:
 Quickly lists all the foods mentioned in a session.
 Example: “suya, amala, shawarma”
 
-📢 Notifications
+## 📢 Notifications
 📱 POST /test-sms – SMS Test
 
 What it does:
 Sends a sample text message (via Twilio) to confirm the SMS feature works.
 
-📧 POST /test-email – Email Test
+## 📧 POST /test-email – Email Test
 
 What it does:
 Sends a sample email (via EmailJS) to confirm the email feature works.
 
-##📦 Project Structure
+## 📦 Project Structure
 graphql
 Copy code
 .
@@ -224,7 +224,7 @@ Copy code
 ├── runtime.txt           # Python version
 ├── food_scout.db         # SQLite DB (auto-created)
 
-##🙏 Acknowledgements
+## 🙏 Acknowledgements
 Groq + LLaMA
 
 Geoapify
