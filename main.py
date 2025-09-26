@@ -14,6 +14,16 @@ from sentence_transformers import SentenceTransformer
 # Local utility imports
 from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or replace "*" with your frontend domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # ✅ Load environment variables
 load_dotenv()
 groq_key = os.getenv("GROQ_API_KEY")
