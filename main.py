@@ -22,6 +22,12 @@ print("🔑 GROQ KEY LOADED:", groq_key)  # Optional: remove after confirming it
 # ✅ Initialize FastAPI app
 app = FastAPI()
 
+# Root endpoint for health checks
+@app.get("/", include_in_schema=False)
+@app.head("/", include_in_schema=False)
+def read_root():
+    return {"status": "Food Scout AI is running!"}
+
 # ✅ Twilio for notifications
 from twilio.rest import Client
 
