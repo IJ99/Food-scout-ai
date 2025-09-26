@@ -10,15 +10,29 @@ from typing import Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
-
-# Local utility imports
-from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
-
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from twilio.rest import Client
 
+# Local utility imports
+from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
+
+class FoodLocationRequest(BaseModel):
+    user_input: str
+    name: str
+    email: str
+
+class FoodLocationResponse(BaseModel):
+    food: Optional[str]
+    city: Optional[str]
+    success: bool
+    error: Optional[str] = None
+
+class RestaurantSearchRequest(BaseModel):
+    food: str
+    city: str
+    radius: int = 5000
+    
 # 1. Create the app FIRST
 app = FastAPI()
 
@@ -116,22 +130,6 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 
-class FoodLocationRequest(BaseModel):
-    user_input: str
-    name: str
-    email: str
-
-class FoodLocationResponse(BaseModel):
-    food: Optional[str]
-    city: Optional[str]
-    success: bool
-    error: Optional[str] = None
-
-class RestaurantSearchRequest(BaseModel):
-    food: str
-    city: str
-    radius: int = 5000
-    
 def load_known_foods_from_db():
     conn = sqlite3.connect("food_scout.db")
     cur = conn.cursor()
