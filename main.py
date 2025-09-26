@@ -3,18 +3,21 @@ import json
 import re
 import sqlite3
 import requests
+import traceback
 
 from typing import Optional
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer 
+from sentence_transformers import SentenceTransformer
 
 # Local utility imports
 from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
+from models import FoodLocationRequest   # <-- make sure you have this
 
-from fastapi import FastAPI, , HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from twilio.rest import Client
 
 # 1. Create the app FIRST
 app = FastAPI()
@@ -46,20 +49,14 @@ load_dotenv()
 groq_key = os.getenv("GROQ_API_KEY")
 print("🔑 GROQ KEY LOADED:", groq_key)  # Optional: remove after confirming it works
 
-# ✅ Initialize FastAPI app
-app = FastAPI()
-
-import traceback
-
 @app.post("/full-search")
 async def full_search(request: FoodLocationRequest):
     try:
-        # your existing logic
+        # your existing logic here
         ...
     except Exception as e:
         print("❌ ERROR in /full-search:", traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
-        
 
 # ✅ Twilio for notifications
 from twilio.rest import Client
