@@ -30,6 +30,7 @@ embedding_model = None
 known_foods = []
 known_food_embeddings = None
 
+
 @app.on_event("startup")
 def load_model_once():
     global embedding_model, known_foods, known_food_embeddings
@@ -41,33 +42,71 @@ def load_model_once():
     initialize_food_table()
 
     # Load foods from DB
-   # Load foods from DB
-known_foods = load_known_foods_from_db()
+    known_foods = load_known_foods_from_db()
 
-# If DB is empty, seed default foods
-if not known_foods:
-    print("⚠️ No foods in DB, seeding defaults...")
-    default_foods = [
-        "Jollof Rice", "Fried Rice", "Coconut Rice", "White Rice & Stew",
-        "Beans & Plantain", "Moi Moi", "Akara", "Yam Porridge", "Boiled Yam & Egg Sauce", "Plantain Chips",
-        "Amala", "Eba", "Pounded Yam", "Fufu", "Semovita", "Wheat Swallow", "Tuwo Shinkafa", "Lafun", "Starch",
-        "Egusi Soup", "Ogbono Soup", "Okra Soup", "Efo Riro", "Afang Soup", "Edikaikong Soup",
-        "Bitterleaf Soup", "Nsala Soup", "Banga Soup", "Oha Soup", "Groundnut Soup", "Fisherman Soup", "Pepper Soup",
-        "Suya", "Kilishi", "Grilled Fish", "Asun", "Nkwobi", "Isi Ewu", "Peppered Snail", "Chicken & Chips", "Catfish Pepper Soup",
-        "Puff Puff", "Meat Pie", "Fish Roll", "Egg Roll", "Gala Sausage Roll", "Chin Chin", "Kuli Kuli", "Boli", "Shawarma",
-        "Pap", "Ogi & Akara", "Agege Bread & Akara", "Yam & Egg Sauce", "Custard & Moi Moi",
-        "Zobo Drink", "Kunu", "Palm Wine", "Chapman", "Tiger Nut Drink"
-    ]
-    conn = sqlite3.connect("food_scout.db")
-    cur = conn.cursor()
-    cur.executemany("INSERT OR IGNORE INTO foods (name) VALUES (?)", [(f,) for f in default_foods])
-    conn.commit()
-    conn.close()
-    known_foods = default_foods
+    # If DB is empty, seed default foods
+    if not known_foods:
+        print("⚠️ No foods in DB, seeding defaults...")
 
-# Now embed foods
-known_food_embeddings = embedding_model.encode(known_foods)
-print(f"✅ Loaded {len(known_foods)} foods into embeddings")
+        default_foods = [
+            # Yoruba (South-West)
+            "Amala", "Ewedu Soup", "Gbegiri Soup", "Efo Riro", "Ila Alasepo",
+            "Asaro (Yam Porridge)", "Ayamase (Ofada Sauce)", "Ofada Rice", "Ogbono Soup",
+            "Peppered Fish", "Dodo Ikire", "Adalu (Beans & Corn)",
+
+            # Igbo (South-East)
+            "Ofe Nsala (White Soup)", "Ofe Onugbu (Bitterleaf Soup)", "Ofe Oha (Oha Soup)",
+            "Abacha (African Salad)", "Ugba & Okporoko", "Akpu (Cassava Fufu)",
+            "Ukodo (Yam Pepper Soup)", "Nkwobi", "Isi Ewu (Goat Head)", "Okpa", "Ji Agworoagwo",
+
+            # Hausa/Fulani (North)
+            "Tuwo Shinkafa", "Tuwo Masara", "Miyan Taushe", "Miyan Kuka", "Fura de Nunu",
+            "Dan Wake", "Kilishi", "Suya", "Balangu", "Masa", "Waina", "Dambu Nama",
+
+            # South-South (Niger Delta)
+            "Banga Soup", "Starch", "Owoh Soup", "Fisherman Soup", "Afang Soup",
+            "Edikaikong Soup", "Ekpang Nkukwo", "Atama Soup", "Afia Efere", "Palm Nut Soup",
+
+            # Middle Belt / North-Central
+            "Egusi Soup", "Okra Soup", "Groundnut Soup", "Sesame Soup", "Pounded Yam",
+            "Cassava Fufu", "Yam & Palm Oil", "Goat Meat Pepper Soup", "Catfish Pepper Soup",
+            "Rice & Beniseed Stew",
+
+            # Snacks & Street Food
+            "Puff Puff", "Akara", "Moi Moi", "Gala Sausage Roll", "Meat Pie",
+            "Fish Roll", "Egg Roll", "Chin Chin", "Kuli Kuli", "Boli (Roasted Plantain)",
+            "Fried Plantain Chips", "Coconut Candy", "Suya (street)", "Asun", "Peppered Snail",
+            "Grilled Catfish", "Shawarma (Nigerian style)", "Agege Bread & Akara",
+
+            # Drinks
+            "Zobo Drink", "Kunu", "Palm Wine", "Chapman", "Tiger Nut Drink",
+            "Burukutu", "Pito", "Fura de Nunu (drink)", "Fanta", "Coke", "Sprite", "Pepsi",
+
+            # Cross-Nigeria Staples
+            "Jollof Rice", "Rice & Stew", "Coconut Rice", "Fried Rice", "White Rice & Stew",
+            "Beans & Plantain (Ewa Agoyin)", "Yam & Egg Sauce", "Custard & Moi Moi",
+            "Pap & Akara", "Stewed Beans", "Plantain Porridge",
+
+            # Extras (~125 total)
+            "Ofe Akwu (Palm Nut Stew)", "Ofe Owerri", "Ofe Ugu", "Ngwo Ngwo", "Awara (Tofu)",
+            "Ojojo (Yam fritters)", "Fried Yam & Pepper Sauce", "Beans Cake (Kosai)",
+            "Meat Kebab (Tsire)", "Gizdodo (Gizzard & Plantain)", "Okro Pepper Soup",
+            "Peppered Chicken", "Catfish Stew", "Vegetable Yam", "Ewa Agoyin & Agege Bread",
+            "Boiled Corn & Pear", "Ofada Rice & Stew", "Beans Pottage"
+        ]
+
+        conn = sqlite3.connect("food_scout.db")
+        cur = conn.cursor()
+        cur.executemany("INSERT OR IGNORE INTO foods (name) VALUES (?)", [(f,) for f in default_foods])
+        conn.commit()
+        conn.close()
+
+        known_foods = default_foods
+
+    # Now embed foods
+    known_food_embeddings = embedding_model.encode(known_foods)
+    print(f"✅ Loaded {len(known_foods)} foods into embeddings")
+
 
 # Enable CORS
 app.add_middleware(
@@ -269,6 +308,7 @@ def search_places_nearby(keyword, lat, lon, radius=5000):
                 "lon": place["geometry"]["coordinates"][0]
             })
 
+        # Update DB and embeddings if new foods were discovered
         if new_foods_found:
             added_any = False
             for food in set(new_foods_found):
@@ -284,6 +324,7 @@ def search_places_nearby(keyword, lat, lon, radius=5000):
     except Exception as e:
         print(f"Search error: {e}")
         return []
+
 # ============================================================
 # Environment
 # ============================================================
@@ -296,7 +337,7 @@ load_dotenv()  # make sure env vars are available
 @app.post("/extract", response_model=FoodLocationResponse)
 def extract_food_location(request: FoodLocationRequest):
     try:
-        result = extract_food_and_location_groq(request.user_input)  # {"food": ..., "city": ...}
+        result = extract_food_and_location_groq(request.user_input)
         ok = bool(result.get("food")) and bool(result.get("city"))
         return FoodLocationResponse(
             food=result.get("food"),
@@ -306,7 +347,6 @@ def extract_food_location(request: FoodLocationRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.post("/search-restaurants")
 def search_restaurants(request: RestaurantSearchRequest):
@@ -328,7 +368,6 @@ def search_restaurants(request: RestaurantSearchRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.post("/full-search")
 def full_search(request: FoodLocationRequest):
     try:
@@ -336,17 +375,17 @@ def full_search(request: FoodLocationRequest):
         user = get_user_by_email(request.email)
         user_id = user["id"] if user else create_user(request.name, request.email)
 
-        # 2) Extract
+        # 2) Extract food + city
         extracted = extract_food_and_location_groq(request.user_input)
         if not extracted.get("food") or not extracted.get("city"):
             raise HTTPException(status_code=400, detail="Could not extract food or city")
 
-        # 3) Geocode
+        # 3) Geocode city
         lat, lon = geocode_city(extracted["city"])
         if not lat or not lon:
             raise HTTPException(status_code=400, detail="City not found")
 
-        # 4) Search
+        # 4) Search restaurants
         restaurants = search_places_nearby(extracted["food"], lat, lon)
         message = None
 
@@ -377,10 +416,10 @@ def full_search(request: FoodLocationRequest):
         if "suggested_food" not in extracted:
             extracted["suggested_food"] = None
 
-        # 6) Save history (always save original extracted)
+        # 6) Save search history
         save_search(user_id, extracted["food"], extracted["city"])
 
-        # 7) Return
+        # 7) Return response
         return {
             "user_input": request.user_input,
             "extracted": extracted,
@@ -395,71 +434,9 @@ def full_search(request: FoodLocationRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@app.get("/history/{email}")
-def get_search_history(email: str):
-    user = get_user_by_email(email)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    history = get_all_searches(email)
-    return {
-        "user": {"name": user["name"], "email": user["email"]},
-        "history": history,
-        "count": len(history),
-    }
-
-
-@app.get("/recommend/{email}")
-def recommend_foods(email: str):
-    global embedding_model, known_food_embeddings
-    user = get_user_by_email(email)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if embedding_model is None or known_food_embeddings is None or not len(known_food_embeddings):
-        raise HTTPException(status_code=500, detail="Embedding model or food embeddings not ready")
-
-    history = get_all_searches(email)
-    past_foods = list({entry["food"] for entry in history if entry.get("food")})
-    if not past_foods:
-        return {"message": "Not enough history for recommendations yet.", "recommendations": []}
-
-    past_embeddings = embedding_model.encode(past_foods)
-    mean_vec = np.mean(past_embeddings, axis=0).reshape(1, -1)
-
-    similarities = cosine_similarity(mean_vec, known_food_embeddings)[0]
-    ranked_indices = np.argsort(similarities)[::-1]
-
-    recommendations = []
-    for idx in ranked_indices:
-        food = known_foods[idx]
-        if food not in past_foods:
-            recommendations.append(food)
-        if len(recommendations) >= 3:
-            break
-
-    return {
-        "user": {"name": user["name"], "email": user["email"]},
-        "history_count": len(past_foods),
-        "past_foods": past_foods,
-        "recommendations": recommendations,
-    }
-
 # ============================================================
 # Chat + memory
 # ============================================================
-
-class ChatRequest(BaseModel):
-    session_id: str
-    message: str
-
-class ChatResponse(BaseModel):
-    session_id: str
-    response: str
-    inferred_food: Optional[str] = None
-    restaurants: Optional[list] = []
-    count: Optional[int] = 0
 
 def save_message(session_id, role, message):
     conn = sqlite3.connect("food_scout.db")
