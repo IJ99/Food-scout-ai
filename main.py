@@ -590,6 +590,55 @@ def summarize_session(session_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/history/{email}")
+def get_search_history(email: str):
+    user = get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    history = get_all_searches(email)
+    return {
+        "user": {"name": user["name"], "email": user["email"]},
+        "history": history,
+        "count": len(history),
+    }
+
+@app.get("/recommend/{email}")
+def recommend_foods(email: str):
+    global embedding_model, known_food_embeddings
+    user = get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if embedding_model is None or known_food_embeddings is None or not len(known_food_embeddings):
+        raise HTTPException(status_code=500, detail="Embedding model or food embeddings not ready")
+
+    history = get_all_searches(email)
+    past_foods = list({entry["food"] for entry in history if entry.get("food")})
+    if not past_foods:
+        return {"message": "Not enough history for recommendations yet.", "recommendations": []}
+
+    past_embeddings = embedding_model.encode(past_foods)
+    mean_vec = np.mean(past_embeddings, axis=0).reshape(1, -1)
+
+    similarities = cosine_similarity(mean_vec, known_food_embeddings)[0]
+    ranked_indices = np.argsort(similarities)[::-1]
+
+    recommendations = []
+    for idx in ranked_indices:
+        food = known_foods[idx]
+        if food not in past_foods:
+            recommendations.append(food)
+        if len(recommendations) >= 3:
+            break
+
+    return {
+        "user": {"name": user["name"], "email": user["email"]},
+        "history_count": len(past_foods),
+        "past_foods": past_foods,
+        "recommendations": recommendations,
+    }
+
 # ============================================================
 # Twilio + Email test endpoints
 # ============================================================
