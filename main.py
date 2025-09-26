@@ -13,7 +13,7 @@ from sentence_transformers import SentenceTransformer
 
 # Local utility imports
 from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
-from models import FoodLocationRequest   # <-- make sure you have this
+
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
