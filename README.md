@@ -32,26 +32,26 @@ Interactive Swagger docs are available here:
 
 ## 🔑 Example API Endpoints
 
-### `POST /extract`
-Extract food and city from user input  
-Request:
-```json
+## 📌 API Endpoints
 
-{ "user_input": "I want amala in Ibadan", "name": "Joel", "email": "joel@email.com" }
-Response:
+### 🔍 Food & Restaurant Search
+- **POST `/extract`** → Extract food and city from user input  
+- **POST `/search-restaurants`** → Search restaurants by food + city  
+- **POST `/full-search`** → Full flow (user check, extraction, geocoding, fallback, history)
 
-json
-Copy code
-{ "food": "amala", "city": "Ibadan", "success": true }
-POST /search-restaurants
-Search restaurants by food & city
-Request:
+### 📜 User History & Recommendations
+- **GET `/history/{email}`** → Get past search history  
+- **GET `/recommend/{email}`** → Recommend foods based on user history  
 
-json
-Copy code
-{ "food": "pizza", "city": "Lagos", "radius": 5000 }
-POST /full-search
-Does everything: user check, extraction, geocoding, fallback, history
+### 💬 Chat & Conversation
+- **POST `/chat`** → Simple chat interface with memory  
+- **POST `/chat-smart`** → Smart chat with food inference + restaurant suggestions  
+- **GET `/memory/{session_id}`** → Retrieve chat history for a session  
+- **GET `/summary/{session_id}`** → Summarize foods mentioned in a session  
+
+### 📲 Notifications
+- **POST `/test-sms`** → Send test SMS via Twilio  
+- **POST `/test-email`** → Send test Email via EmailJS  
 
 🧠 How It Works
 User sends natural query like "I want amala in Ibadan"
