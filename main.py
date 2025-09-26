@@ -7,22 +7,39 @@ import requests
 from typing import Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer 
 
 # Local utility imports
 from db_utils import get_user_by_email, create_user, save_search, get_last_search, get_all_searches
 
+from fastapi import FastAPI, , HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+# 1. Create the app FIRST
+app = FastAPI()
+
+# 2. Then add CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or replace "*" with your frontend domain
+    allow_origins=["*"],  # Or replace "*" with your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 3. Now define your routes
+@app.get("/", include_in_schema=False)
+def root():
+    return {"status": "Food Scout AI is running!"}
+
+@app.get("/health", include_in_schema=False)
+def health_check():
+    return {
+        "status": "healthy",
+        "groq_model": "llama3-8b-8192",
+        "api": "online"
+    }
 
 # ✅ Load environment variables
 load_dotenv()
@@ -43,11 +60,6 @@ async def full_search(request: FoodLocationRequest):
         print("❌ ERROR in /full-search:", traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
         
-# Root endpoint for health checks
-@app.get("/", include_in_schema=False)
-@app.head("/", include_in_schema=False)
-def read_root():
-    return {"status": "Food Scout AI is running!"}
 
 # ✅ Twilio for notifications
 from twilio.rest import Client
