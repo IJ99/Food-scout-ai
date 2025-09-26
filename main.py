@@ -41,10 +41,33 @@ def load_model_once():
     initialize_food_table()
 
     # Load foods from DB
-    known_foods = load_known_foods_from_db()
-    if known_foods:
-        known_food_embeddings = embedding_model.encode(known_foods)
-    print(f"✅ Loaded {len(known_foods)} foods into embeddings")
+   # Load foods from DB
+known_foods = load_known_foods_from_db()
+
+# If DB is empty, seed default foods
+if not known_foods:
+    print("⚠️ No foods in DB, seeding defaults...")
+    default_foods = [
+        "Jollof Rice", "Fried Rice", "Coconut Rice", "White Rice & Stew",
+        "Beans & Plantain", "Moi Moi", "Akara", "Yam Porridge", "Boiled Yam & Egg Sauce", "Plantain Chips",
+        "Amala", "Eba", "Pounded Yam", "Fufu", "Semovita", "Wheat Swallow", "Tuwo Shinkafa", "Lafun", "Starch",
+        "Egusi Soup", "Ogbono Soup", "Okra Soup", "Efo Riro", "Afang Soup", "Edikaikong Soup",
+        "Bitterleaf Soup", "Nsala Soup", "Banga Soup", "Oha Soup", "Groundnut Soup", "Fisherman Soup", "Pepper Soup",
+        "Suya", "Kilishi", "Grilled Fish", "Asun", "Nkwobi", "Isi Ewu", "Peppered Snail", "Chicken & Chips", "Catfish Pepper Soup",
+        "Puff Puff", "Meat Pie", "Fish Roll", "Egg Roll", "Gala Sausage Roll", "Chin Chin", "Kuli Kuli", "Boli", "Shawarma",
+        "Pap", "Ogi & Akara", "Agege Bread & Akara", "Yam & Egg Sauce", "Custard & Moi Moi",
+        "Zobo Drink", "Kunu", "Palm Wine", "Chapman", "Tiger Nut Drink"
+    ]
+    conn = sqlite3.connect("food_scout.db")
+    cur = conn.cursor()
+    cur.executemany("INSERT OR IGNORE INTO foods (name) VALUES (?)", [(f,) for f in default_foods])
+    conn.commit()
+    conn.close()
+    known_foods = default_foods
+
+# Now embed foods
+known_food_embeddings = embedding_model.encode(known_foods)
+print(f"✅ Loaded {len(known_foods)} foods into embeddings")
 
 # Enable CORS
 app.add_middleware(
